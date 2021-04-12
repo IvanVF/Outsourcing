@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="20201203210000_1" author="Ivan">
+        <modifyDataType tableName="portfolio" columnName="url" newDataType="VARCHAR(10000)"/>
+    </changeSet>
+
+    <changeSet id="20201203210000_2" author="Ivan">
+        <modifyDataType tableName="producer" columnName="agencies" newDataType="VARCHAR(10000)"/>
+    </changeSet>
+
+    <changeSet id="20201203210000_3" author="Ivan">
+        <modifyDataType tableName="producer" columnName="url" newDataType="VARCHAR(10000)"/>
+    </changeSet>
+
+    <changeSet id="20201203210000_4" author="Ivan">
+        <modifyDataType tableName="portfolio" columnName="description" newDataType="VARCHAR(15000)"/>
+    </changeSet>
+
+    <changeSet id="20201203210000_5" author="Ivan">
+        <modifyDataType tableName="producer" columnName="inn" newDataType="bigint"/>
+    </changeSet>
+
+    <changeSet id="20201205193200_1" author="YegorR">
+        <modifyDataType tableName="purchase" columnName="number" newDataType="serial"/>
+    </changeSet>
+    <changeSet id="20201205193200_2" author="YegorR">
+        <sql>
+            CREATE SEQUENCE purchase_number_seq;
+        </sql>
+        <sql>
+            ALTER TABLE purchase
+            ALTER COLUMN number SET DEFAULT nextval('purchase_number_seq');
+        </sql>
+    </changeSet>
+</databaseChangeLog>

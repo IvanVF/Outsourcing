@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet author="YegorR" id="20201111123000_1">
+
+        <!-- Создание таблицы refresh-сессий -->
+        <createTable tableName="refresh_session">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="refresh_token" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fingerprint" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exp_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="refresh_session" baseColumnNames="user_id" constraintName="refresh_user_fk"
+                                 referencedTableName="user_table"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <changeSet author="YegorR" id="20201117190000_1">
+       <addColumn tableName="producer">
+           <column name="registration_date" type="date" defaultValueDate="2020-11-11">
+               <constraints nullable="false"/>
+           </column>
+           <column name="accreditation_time" type="timestamp"/>
+           <column name="accreditation_request" type="boolean" defaultValueBoolean="false"/>
+       </addColumn>
+    </changeSet>
+    <changeSet author="YegorR" id="20201117190000_2">
+        <addColumn tableName="producer">
+            <column name="block_date" type="date"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

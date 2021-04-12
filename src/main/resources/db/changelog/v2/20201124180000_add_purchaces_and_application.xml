@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="20201124180000_1" author="YegorR">
+        <createTable tableName="purchase">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(320)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR(10000)"/>
+            <column name="subject" type="VARCHAR(320)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="starting_price" type="numeric(20, 2)"/>
+            <column name="currency" type="VARCHAR(5)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="start_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="finish_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="publication_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="closing_date" type="date"/>
+            <column name="additional_stage_possible" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="number" type="serial">
+                <constraints nullable="false"/>
+            </column>
+            <column name="closing_description" type="varchar(10000)"/>
+            <column name="relative_id" type="UUID"/>
+            <column name="relative_parent" type="boolean"/> 
+        </createTable>
+        <addForeignKeyConstraint baseTableName="purchase" baseColumnNames="relative_id" constraintName="relative_purchase_id" referencedTableName="purchase"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="20201124180000_2" author="YegorR">
+        <renameTable oldTableName="stack" newTableName="producer_stack"/>
+        <createTable tableName="purchase_stack">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="purchase_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="technology" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="purchase_stack" baseColumnNames="purchase_id" constraintName="stack_purchase_fk" referencedTableName="purchase"
+                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
+    </changeSet>
+    <changeSet id="20201124180000_3" author="YegorR">
+        <createTable tableName="application">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="purchase_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="producer_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="publication_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="price" type="numeric(20, 2)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="varchar(10000)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="winner" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="application" baseColumnNames="purchase_id" constraintName="application_purchase_fk"
+                                 referencedTableName="purchase"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="application" baseColumnNames="producer_id" constraintName="application_producer_fk"
+                                 referencedTableName="producer"
+                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <include file="/db/changelog/v2/20201124150000_add_producers_and_workers.xml"/>
+    <include file="/db/changelog/v2/20201124180000_add_purchaces_and_application.xml"/>
+    <include file="/db/changelog/v2/20201127230000_add_documents.xml"/>
+    <include file="/db/changelog/v2/20201203210000_change_portfolio_url.xml"/>
+    <include file="/db/changelog/v2/20201205200000_inn_fields_change.xml"/>
+    <include file="/db/changelog/v2/20201208204500_add_telegram_id.xml"/>
+    <include file="/db/changelog/v2/20201219135000_add_audit.xml"/>
+</databaseChangeLog>

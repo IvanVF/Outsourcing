@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <changeSet author="admin" id="20201110171000_1">
+
+        <!-- Создание таблицы пользователей -->
+        <createTable tableName="user_table">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="email" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="password" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="confirm" type="boolean" defaultValueBoolean="false"/>
+
+            <column name="role_id" type="UUID">
+                <constraints foreignKeyName="fk_user_role"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="user_table"/>
+        </rollback>
+
+        <!-- Создание таблицы ролей -->
+        <createTable tableName="role_table">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="VARCHAR(20)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="role_table"/>
+        </rollback>
+
+        <!-- Заполнение таблицы ролей -->
+        <insert tableName="role_table">
+            <column name="id" value="c684098c-0b35-4d35-9f35-aabb7ccd3530"/>
+            <column name="name" value="USER"/>
+        </insert>
+        <insert tableName="role_table">
+            <column name="id" value="b461a277-32c7-426f-a067-4ab529061f9b"/>
+            <column name="name" value="ADMIN"/>
+        </insert>
+        <insert tableName="role_table">
+            <column name="id" value="caaa0b48-afa6-476a-8d6c-e52eea7c1170"/>
+            <column name="name" value="LAWYER"/>
+        </insert>
+        <insert tableName="role_table">
+            <column name="id" value="63a1a5c7-62f3-42f8-af1c-f3fc1beb7113"/>
+            <column name="name" value="SALESMAN"/>
+        </insert>
+        <insert tableName="role_table">
+            <column name="id" value="9bacba1e-d29f-492c-a407-ffa635587017"/>
+            <column name="name" value="PRODUCER"/>
+        </insert>
+        <insert tableName="role_table">
+            <column name="id" value="7db59338-230f-11eb-adc1-0242ac120002"/>
+            <column name="name" value="BAD"/>
+        </insert>
+
+        <!-- Создание внешнего ключа для таблицы пользоватлей на таблицу ролей -->
+        <addForeignKeyConstraint baseTableName="user_table"
+                                 baseColumnNames="id"
+                                 constraintName="fk_user_role"
+                                 referencedTableName="role_table"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+        />
+
+    </changeSet>
+    <changeSet id="20201111143000_1" author="YegorR">
+        <dropForeignKeyConstraint baseTableName="user_table" constraintName="fk_user_role"/>
+        <addForeignKeyConstraint baseTableName="user_table"
+                                 baseColumnNames="role_id"
+                                 constraintName="fk_user_role"
+                                 referencedTableName="role_table"
+                                 referencedColumnNames="id"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+        />
+    </changeSet>
+
+    <!-- Добавление полей в таблицу пользователей -->
+    <changeSet id="20201111171500_1" author="max">
+        <addColumn tableName="user_table">
+            <column name="first_name" type="VARCHAR(255)">
+            </column>
+        </addColumn>
+        <addColumn tableName="user_table">
+            <column name="last_name" type="VARCHAR(255)">
+            </column>
+        </addColumn>
+        <addColumn tableName="user_table">
+            <column name="middle_name" type="VARCHAR(255)">
+            </column>
+        </addColumn>
+        <addColumn tableName="user_table">
+            <column name="org_name" type="VARCHAR(255)">
+            </column>
+        </addColumn>
+        <addColumn tableName="user_table">
+            <column name="inn_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <addColumn tableName="user_table">
+            <column name="confirm_registration" type="VARCHAR(255)">
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Добавление поля номера телефона в таблицу пользователей -->
+    <changeSet id="20201111235900_1" author="max">
+        <addColumn tableName="user_table">
+            <column name="phone_number" type="BIGINT">
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Добавление администратора в таблицу пользователей. Логин: admin, пароль: admin -->
+    <changeSet id="20201113183400_1" author="max">
+        <insert tableName="user_table">
+            <column name="id" value="37ea297c-15f9-4562-b181-9aedc27fc724"/>
+            <column name="email" value="admin"/>
+            <column name="password" value="$2a$10$JoRMs94mjSIZ5G8Cm5Fxbe4C47JV0w4M6/f4Oil9wf8gyfsDeyoga"/>
+            <column name="confirm" value="true"/>
+            <column name="role_id" value="b461a277-32c7-426f-a067-4ab529061f9b"/>
+            <column name="first_name" value="administrator"/>
+            <column name="last_name" value=""/>
+            <column name="middle_name" value=""/>
+            <column name="org_name" value=""/>
+            <column name="inn_number" value=""/>
+            <column name="confirm_registration" value=""/>
+        </insert>
+    </changeSet>
+
+</databaseChangeLog>

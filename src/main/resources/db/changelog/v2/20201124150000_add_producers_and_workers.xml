@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="20201124150000_1" author="YegorR">
+        <createTable tableName="user_table">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="email" type="VARCHAR(320)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="password" type="VARCHAR(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="role" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet id="20201124150000_2" author="YegorR">
+        <createTable tableName="refresh_session">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="refresh_token" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fingerprint" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="exp_time" type="timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="refresh_session" baseColumnNames="user_id" constraintName="refresh_user_fk" referencedTableName="user_table"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="20201124150000_3" author="YegorR">
+        <createTable tableName="worker">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="worker" baseColumnNames="user_id" constraintName="worker_user_fk" referencedTableName="user_table"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="20201124150000_4" author="YegorR">
+        <createTable tableName="producer">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="registration_date" type="date">
+                <constraints nullable="false"/>
+            </column>
+            <column name="accreditation_time" type="timestamp"/>
+            <column name="inn" type="VARCHAR(12)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="individual" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="headcount" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="specialization" type="text">
+                <constraints nullable="false"/>
+            </column>
+            <column name="legal_address" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="actual_address" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="url" type="TEXT"/>
+            <column name="agencies" type="VARCHAR(1000)"/>
+            <column name="accreditation" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="accreditation_request" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="block_date" type="date"/>
+            <column name="block_comment" type="VARCHAR(100000)"/>
+            <column name="confirm" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="confirm_code" type="UUID"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="producer" baseColumnNames="user_id" constraintName="producer_user_fk" referencedTableName="user_table"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="20201124150000_5" author="YegorR">
+        <createTable tableName="individual_producer">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="producer_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="individual_producer" baseColumnNames="producer_id" constraintName="individual_producer_fk"
+                                 referencedTableName="producer"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+    <changeSet id="20201124150000_6" author="YegorR">
+        <createTable tableName="entity_producer">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="producer_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="organization_name" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="first_name" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(40)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="position" type="VARCHAR(200)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="entity_producer" baseColumnNames="producer_id" constraintName="entity_producer_fk"
+                                 referencedTableName="producer"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="20201124150000_7" author="YegorR">
+        <createTable tableName="phone">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="producer_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="bigint">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="phone" baseColumnNames="producer_id" constraintName="phone_producer_fk" referencedTableName="producer"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="20201124150000_8" author="YegorR">
+        <createTable tableName="staff">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="producer_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="headcount" type="integer">
+                <constraints nullable="false"/>
+            </column>
+            <column name="activity" type="VARCHAR(100)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="staff" baseColumnNames="producer_id" constraintName="staff_producer_fk" referencedTableName="producer"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="20201124150000_9" author="YegorR">
+        <createTable tableName="portfolio">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="producer_id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="customer" type="VARCHAR(200)"/>
+            <column name="description" type="VARCHAR(200)"/>
+            <column name="url" type="VARCHAR(200)"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="portfolio" baseColumnNames="producer_id" constraintName="portfolio_producer_fk" referencedTableName="producer"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+
+    <changeSet id="20201124150000_10" author="YegorR">
+        <createTable tableName="stack">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="producer_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="technology" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="stack" baseColumnNames="producer_id" constraintName="stack_producer_fk" referencedTableName="producer"
+                                 referencedColumnNames="id" onUpdate="CASCADE" onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Логин: admin@mail.com Пароль: Fyn9eRRR-->
+    <changeSet id="20201124150000_11" author="YegorR">
+        <insert tableName="user_table">
+            <column name="id" value="c651bd00-4e08-445e-95ac-5e6a699f89da"/>
+            <column name="email" value="admin@mail.com"/>
+            <column name="password" value="$2y$12$b5P1rBc94Eoh8/Kz/om1Be1iyMik6baXwIPAL6AmDXkBQzpive5nG"/>
+            <column name="role" value="ADMIN"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>

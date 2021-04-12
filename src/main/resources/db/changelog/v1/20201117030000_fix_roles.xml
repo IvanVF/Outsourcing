@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!-- Удаление таблицы roles-->
+    <changeSet author="YegorR" id="20201117030000_1">
+        <dropForeignKeyConstraint baseTableName="user_table" constraintName="fk_user_role"/>
+        <dropTable tableName="role_table"/>
+        <dropColumn tableName="user_table" columnName="role_id"/>
+        <addColumn tableName="user_table">
+            <column name="role" type="VARCHAR(256)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="YegorR" id="20201117180000_1">
+        <sql>
+            UPDATE user_table
+            SET role = 'ADMIN'
+            WHERE email = 'admin';
+        </sql>
+    </changeSet>
+</databaseChangeLog>

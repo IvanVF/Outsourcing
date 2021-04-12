@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+    http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+    <!-- Создание таблицы producer-->
+    <changeSet author="YegorR" id="20201114180000_1">
+        <createTable tableName="producer">
+            <column name="producer_id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="inn_number" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone_number" type="BIGINT"/>
+            <column name="confirm" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="confirm_code" type="VARCHAR(255)"/>
+            <column name="accreditation" type="boolean" defaultValueBoolean="false">
+                <constraints nullable="false"/>
+            </column>
+            <column name="stack" type="text"/>
+            <column name="physical" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="producer" baseColumnNames="user_id" constraintName="producer_user_fk" referencedTableName="user_table"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <!-- Создание таблицы physical_producer -->
+    <changeSet id="20201114180000_2" author="YegorR">
+        <createTable tableName="physical_producer">
+            <column name="physical_producer_id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(255)"/>
+            <column name="producer_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="physical_producer" baseColumnNames="producer_id" constraintName="physical_producer_fk"
+                                 referencedTableName="producer" referencedColumnNames="producer_id"/>
+    </changeSet>
+
+    <!-- Создание таблицы entity_producer -->
+    <changeSet id="20201114180000_3" author="YegorR">
+        <createTable tableName="entity_producer">
+            <column name="entity_producer_id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="organization_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="producer_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="entity_producer" baseColumnNames="producer_id" constraintName="entity_producer_fk"
+                                 referencedTableName="producer" referencedColumnNames="producer_id"/>
+    </changeSet>
+
+    <!-- Создание таблицы worker -->
+    <changeSet id="20201114180000_4" author="YegorR">
+        <createTable tableName="worker">
+            <column name="worker_id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="first_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="last_name" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="middle_name" type="VARCHAR(255)"/>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="worker" baseColumnNames="user_id" constraintName="worker_user_fk"
+                                 referencedTableName="user_table" referencedColumnNames="id"/>
+    </changeSet>
+
+    <!-- Перенос данных и удаление лишних столбцов -->
+    <changeSet id="20201114180000_5" author="YegorR">
+        <sql>
+            INSERT INTO producer(producer_id, user_id, inn_number, phone_number, accreditation, physical, confirm)
+            SELECT id, id, inn_number, phone_number, 'true', 'true', 'true'
+            FROM user_table
+            WHERE user_table.first_name IS NOT NULL AND user_table.email &lt;&gt; 'admin';
+        </sql>
+        <sql>
+            INSERT INTO producer(producer_id, user_id, inn_number, phone_number, accreditation, physical)
+            SELECT id, id, inn_number, phone_number, 'true', 'false'
+            FROM user_table
+            WHERE user_table.first_name IS NULL;
+        </sql>
+        <sql>
+            INSERT INTO physical_producer(physical_producer_id, producer_id, first_name, middle_name, last_name)
+            SELECT id, id, first_name, middle_name, last_name
+            FROM user_table
+            WHERE user_table.first_name IS NOT NULL AND user_table.email &lt;&gt; 'admin';
+        </sql>
+        <sql>
+            INSERT INTO entity_producer(entity_producer_id, producer_id, organization_name)
+            SELECT id, id, org_name
+            FROM user_table
+            WHERE user_table.first_name IS NULL;
+        </sql>
+
+        <dropColumn tableName="user_table" columnName="confirm"/>
+        <dropColumn tableName="user_table" columnName="first_name"/>
+        <dropColumn tableName="user_table" columnName="middle_name"/>
+        <dropColumn tableName="user_table" columnName="last_name"/>
+        <dropColumn tableName="user_table" columnName="org_name"/>
+        <dropColumn tableName="user_table" columnName="inn_number"/>
+        <dropColumn tableName="user_table" columnName="confirm_registration"/>
+        <dropColumn tableName="user_table" columnName="phone_number"/>
+    </changeSet>
+    <changeSet id="20201114180000_6" author="YegorR">
+        <addColumn tableName="worker">
+            <column name="worker_type" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <!-- Исправляю внешние ключи -->
+    <changeSet id="20201114180000_7" author="YegorR">
+        <dropForeignKeyConstraint baseTableName="producer" constraintName="producer_user_fk"/>
+        <addForeignKeyConstraint baseTableName="producer" baseColumnNames="user_id" constraintName="producer_user_fk" referencedTableName="user_table"
+                                 referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="physical_producer" constraintName="physical_producer_fk"/>
+        <addForeignKeyConstraint baseTableName="physical_producer" baseColumnNames="producer_id" constraintName="physical_producer_fk"
+                                 referencedTableName="producer" referencedColumnNames="producer_id" onUpdate="CASCADE" onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="entity_producer" constraintName="entity_producer_fk"/>
+        <addForeignKeyConstraint baseTableName="entity_producer" baseColumnNames="producer_id" constraintName="entity_producer_fk"
+                                 referencedTableName="producer" referencedColumnNames="producer_id" onUpdate="CASCADE" onDelete="CASCADE"/>
+
+        <dropForeignKeyConstraint baseTableName="worker" constraintName="worker_user_fk"/>
+        <addForeignKeyConstraint baseTableName="worker" baseColumnNames="user_id" constraintName="worker_user_fk"
+                                 referencedTableName="user_table" referencedColumnNames="id" onDelete="CASCADE" onUpdate="CASCADE"/>
+    </changeSet>
+</databaseChangeLog>

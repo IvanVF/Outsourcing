@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="20201127230000_1" author="YegorR">
+        <createTable tableName="document">
+            <column name="id" type="UUID">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="address" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="owner" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="type" type="VARCHAR(256)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="document" baseColumnNames="owner" constraintName="document_user_fk" referencedTableName="user_table"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+    <changeSet id="20201127230000_2" author="YegorR">
+        <addColumn tableName="document">
+            <column name="name" type="VARCHAR(1024)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="size" type="integer">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="20201129160000_1" author="YegorR">
+        <createTable tableName="accreditation_apply_document">
+            <column name="producer_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="accreditation_apply_document" baseColumnNames="producer_id"
+                                 constraintName="accreditation_apply_document_producer_fk" referencedTableName="producer"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="accreditation_apply_document" baseColumnNames="document_id" constraintName="accreditation_apply_document_fk"
+                                 referencedTableName="document"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="20201129160000_2" author="YegorR">
+        <createTable tableName="purchase_start_document">
+            <column name="purchase_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="purchase_start_document" baseColumnNames="purchase_id"
+                                 constraintName="purchase_start_document_purchase_fk" referencedTableName="purchase"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="purchase_start_document" baseColumnNames="document_id" constraintName="purchase_start_document_fk"
+                                 referencedTableName="document"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="20201129160000_3" author="YegorR">
+        <createTable tableName="purchase_finish_document">
+            <column name="purchase_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="purchase_finish_document" baseColumnNames="purchase_id"
+                                 constraintName="purchase_finish_document_purchase_fk" referencedTableName="purchase"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="purchase_finish_document" baseColumnNames="document_id" constraintName="purchase_finish_document_fk"
+                                 referencedTableName="document"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="20201129160000_4" author="YegorR">
+        <createTable tableName="application_document">
+            <column name="application_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="document_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="application_document" baseColumnNames="application_id"
+                                 constraintName="application_document_application_fk" referencedTableName="application"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableName="application_document" baseColumnNames="document_id" constraintName="application_document_fk"
+                                 referencedTableName="document"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+
+    <!-- фикс -->
+    <changeSet id="20201129190000_1" author="YegorR">
+        <dropNotNullConstraint tableName="producer" columnName="headcount"/>
+    </changeSet>
+    <changeSet id="20201129190000_2" author="YegorR">
+        <dropNotNullConstraint tableName="producer" columnName="specialization"/>
+    </changeSet>
+    <changeSet id="20201129190000_3" author="YegorR">
+        <dropNotNullConstraint tableName="producer" columnName="legal_address"/>
+        <dropNotNullConstraint tableName="producer" columnName="actual_address"/>
+    </changeSet>
+    <changeSet id="20201202205000_1" author="YegorR">
+        <dropNotNullConstraint tableName="entity_producer" columnName="first_name"/>
+        <dropNotNullConstraint tableName="entity_producer" columnName="middle_name"/>
+        <dropNotNullConstraint tableName="entity_producer" columnName="last_name"/>
+        <dropNotNullConstraint tableName="entity_producer" columnName="position"/>
+    </changeSet>
+</databaseChangeLog>
